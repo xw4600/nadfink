@@ -1,0 +1,826 @@
+/**
+ * NadFink Feed card styles.
+ *
+ * Everything is scoped under .ndf so the active theme cannot reach in and
+ * override these rules. This is deliberate: theme CSS is what causes feed
+ * readers to clip headlines and descriptions.
+ *
+ * Contract enforced by tests/css-no-truncation.php: no line-clamp, no
+ * text-overflow ellipsis, and no max-height on .ndf-headline or .ndf-content.
+ * The only max-height allowed is inside .ndf-content.is-collapsed, which only
+ * renders when the operator explicitly opts in via the collapse threshold.
+ */
+
+.ndf {
+	--ndf-bg: #ffffff;
+	--ndf-surface: #ffffff;
+	--ndf-surface-alt: #f6f7f9;
+	--ndf-border: #e2e5e9;
+	--ndf-border-strong: #cbd2d9;
+	--ndf-text: #14181d;
+	--ndf-text-muted: #5b6570;
+	--ndf-text-faint: #838d97;
+	--ndf-accent: #1a73e8;
+	--ndf-accent-soft: rgba(26, 115, 232, 0.09);
+	--ndf-hover: rgba(0, 0, 0, 0.035);
+	--ndf-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+	--ndf-shadow-hover: 0 4px 16px rgba(15, 23, 42, 0.09);
+	--ndf-radius: 14px;
+	--ndf-gap: 18px;
+	--ndf-pad: 22px;
+	--ndf-max-width: 100%;
+	--ndf-font: inherit;
+	--ndf-heading-weight: 700;
+	--ndf-heading-size: 1.3125rem;
+	--ndf-heading-line: 1.32;
+	--ndf-body-size: 1rem;
+	--ndf-body-line: 1.68;
+
+	box-sizing: border-box;
+	max-width: var(--ndf-max-width);
+	margin-inline: auto;
+	color: var(--ndf-text);
+	font-family: var(--ndf-font);
+	font-size: var(--ndf-body-size);
+	line-height: var(--ndf-body-line);
+	text-align: left;
+}
+
+/* ---------------------------------------------------------------- dark mode */
+
+.ndf[data-ndf-theme="dark"] {
+	--ndf-bg: #101317;
+	--ndf-surface: #171b21;
+	--ndf-surface-alt: #1e242c;
+	--ndf-border: #2a313a;
+	--ndf-border-strong: #3a424d;
+	--ndf-text: #e8ebef;
+	--ndf-text-muted: #a3adb8;
+	--ndf-text-faint: #78838f;
+	--ndf-accent: #8ab4f8;
+	--ndf-accent-soft: rgba(138, 180, 248, 0.14);
+	--ndf-hover: rgba(255, 255, 255, 0.045);
+	--ndf-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--ndf-shadow-hover: 0 4px 18px rgba(0, 0, 0, 0.55);
+}
+
+/* Follow the operating system until the visitor makes a choice. */
+@media (prefers-color-scheme: dark) {
+	.ndf[data-ndf-theme="system"] {
+		--ndf-bg: #101317;
+		--ndf-surface: #171b21;
+		--ndf-surface-alt: #1e242c;
+		--ndf-border: #2a313a;
+		--ndf-border-strong: #3a424d;
+		--ndf-text: #e8ebef;
+		--ndf-text-muted: #a3adb8;
+		--ndf-text-faint: #78838f;
+		--ndf-accent: #8ab4f8;
+		--ndf-accent-soft: rgba(138, 180, 248, 0.14);
+		--ndf-hover: rgba(255, 255, 255, 0.045);
+		--ndf-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+		--ndf-shadow-hover: 0 4px 18px rgba(0, 0, 0, 0.55);
+	}
+}
+
+.ndf *,
+.ndf *::before,
+.ndf *::after {
+	box-sizing: inherit;
+}
+
+/* Break out of a narrow theme container when the page opts in. */
+.ndf[data-ndf-wide="yes"] {
+	max-width: min(1100px, calc(100vw - 32px));
+	width: 100%;
+}
+
+/* ------------------------------------------------------------------ toolbar */
+
+.ndf-toolbar {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-bottom: 20px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--ndf-border);
+}
+
+.ndf-toolbar-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.ndf-search {
+	flex: 1 1 260px;
+	min-width: 0;
+}
+
+.ndf-search-input {
+	width: 100%;
+	padding: 10px 14px;
+	border: 1px solid var(--ndf-border-strong);
+	border-radius: 999px;
+	background: var(--ndf-surface);
+	color: var(--ndf-text);
+	font-family: inherit;
+	font-size: 0.9375rem;
+	line-height: 1.4;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ndf-search-input::placeholder {
+	color: var(--ndf-text-faint);
+	opacity: 1;
+}
+
+.ndf-search-input:focus {
+	outline: none;
+	border-color: var(--ndf-accent);
+	box-shadow: 0 0 0 3px var(--ndf-accent-soft);
+}
+
+.ndf-toolbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+}
+
+.ndf-filter-toggle,
+.ndf-theme-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	min-height: 40px;
+	padding: 8px 14px;
+	border: 1px solid var(--ndf-border-strong);
+	border-radius: 999px;
+	background: var(--ndf-surface);
+	color: var(--ndf-text-muted);
+	font-family: inherit;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.ndf-filter-toggle:hover,
+.ndf-theme-toggle:hover {
+	background: var(--ndf-hover);
+	color: var(--ndf-text);
+}
+
+.ndf-filter-toggle:focus-visible,
+.ndf-theme-toggle:focus-visible,
+.ndf-pill:focus-visible,
+.ndf-dismiss:focus-visible,
+.ndf-restore:focus-visible,
+.ndf-expand:focus-visible,
+.ndf-page:focus-visible {
+	outline: 2px solid var(--ndf-accent);
+	outline-offset: 2px;
+}
+
+.ndf-filter-toggle[aria-expanded="true"] {
+	background: var(--ndf-accent-soft);
+	border-color: var(--ndf-accent);
+	color: var(--ndf-accent);
+}
+
+.ndf-theme-toggle {
+	width: 40px;
+	padding: 8px;
+}
+
+.ndf-icon-sun,
+.ndf-icon-moon {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-color: currentColor;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
+
+.ndf-icon-sun {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E");
+}
+
+.ndf-icon-moon {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/%3E%3C/svg%3E");
+}
+
+.ndf[data-ndf-theme="dark"] .ndf-icon-sun,
+.ndf[data-ndf-theme="light"] .ndf-icon-moon {
+	display: none;
+}
+
+/* Category pills */
+
+.ndf-filter-panel {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.ndf-filter-panel[hidden] {
+	display: none;
+}
+
+.ndf-pill {
+	padding: 6px 14px;
+	border: 1px solid var(--ndf-border-strong);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--ndf-text-muted);
+	font-family: inherit;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1.5;
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.ndf-pill:hover {
+	background: var(--ndf-hover);
+	color: var(--ndf-text);
+}
+
+.ndf-pill.is-active {
+	background: var(--ndf-accent);
+	border-color: var(--ndf-accent);
+	color: #fff;
+}
+
+.ndf[data-ndf-theme="dark"] .ndf-pill.is-active {
+	color: #101317;
+}
+
+.ndf-status {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-height: 20px;
+	font-size: 0.8125rem;
+	color: var(--ndf-text-faint);
+}
+
+.ndf-restore {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--ndf-accent);
+	font-family: inherit;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.ndf-restore[hidden] {
+	display: none;
+}
+
+/* -------------------------------------------------------------------- cards */
+
+.ndf-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ndf-gap);
+}
+
+.ndf-card {
+	position: relative;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 16px;
+	padding: var(--ndf-pad);
+	border: 1px solid var(--ndf-border);
+	border-radius: var(--ndf-radius);
+	background: var(--ndf-surface);
+	box-shadow: var(--ndf-shadow);
+	transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.ndf[data-ndf-transparent="yes"] .ndf-card {
+	padding-inline: 0;
+	border-inline: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.ndf[data-ndf-transparent="yes"] .ndf-card:hover {
+	box-shadow: none;
+}
+
+.ndf-card:hover {
+	border-color: var(--ndf-border-strong);
+	box-shadow: var(--ndf-shadow-hover);
+}
+
+/* Image sits beside the text on wide screens. */
+@media (min-width: 720px) {
+	.ndf-card {
+		grid-template-columns: minmax(0, 1fr) 220px;
+		align-items: start;
+	}
+
+	.ndf[data-ndf-transparent="yes"] .ndf-card {
+		grid-template-columns: minmax(0, 1fr) 260px;
+	}
+}
+
+.ndf-media {
+	display: block;
+	overflow: hidden;
+	border-radius: 10px;
+	background: var(--ndf-surface-alt);
+	order: -1;
+	aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 720px) {
+	.ndf-media {
+		order: 0;
+		aspect-ratio: 4 / 3;
+	}
+}
+
+.ndf-media img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.25s ease;
+}
+
+.ndf-card:hover .ndf-media img {
+	transform: scale(1.03);
+}
+
+.ndf-body {
+	min-width: 0;
+}
+
+/*
+ * Uniform card height, desktop only.
+ *
+ * Opted into with data-ndf-uniform="yes" rather than applied everywhere, so
+ * that the no-truncation guarantee still holds on narrow screens and the test
+ * suite can pin the exemption to exactly one selector.
+ *
+ * The description takes whatever height is left over and clips, which is why
+ * the collapse button is driven by measured overflow in feed.js: at this width
+ * the same text can fit or not depending on font size and zoom, so counting
+ * characters would be a guess.
+ */
+@media (min-width: 720px) {
+	.ndf[data-ndf-uniform="yes"] .ndf-card {
+		height: var(--ndf-card-height, 400px);
+	}
+
+	.ndf[data-ndf-uniform="yes"] .ndf-body {
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+	}
+
+	.ndf[data-ndf-uniform="yes"] .ndf-content {
+		flex: 1 1 auto;
+		min-height: 0;
+
+		/* The box clips, not a character budget: the description takes the
+		 * space the image and meta line leave over. The inherited
+		 * max-height is dropped so nothing clips twice at two heights. */
+		max-height: none;
+		overflow: hidden;
+	}
+
+	/* Expanded, the description has to be readable, so the clip is released
+	 * and the card is allowed to grow. Without this the fade lifted but the
+	 * text stayed hidden behind overflow and show more did nothing. */
+	.ndf[data-ndf-uniform="yes"] .ndf-card.is-expanded {
+		height: auto;
+	}
+
+	.ndf[data-ndf-uniform="yes"] .ndf-content:not(.is-collapsed) {
+		overflow: visible;
+	}
+
+	/* The image column matches the fixed card height instead of a 4:3 box. */
+	.ndf[data-ndf-uniform="yes"] .ndf-media {
+		height: 100%;
+		aspect-ratio: auto;
+	}
+
+	.ndf[data-ndf-uniform="yes"] .ndf-media img {
+		height: 100%;
+	}
+
+	/* A fade so a clipped description reads as continuing rather than ending. */
+	.ndf[data-ndf-uniform="yes"] .ndf-content.is-collapsed {
+		-webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent 100%);
+		mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent 100%);
+	}
+
+	.ndf[data-ndf-uniform="yes"] .ndf-expand {
+		flex: 0 0 auto;
+		margin-top: 8px;
+	}
+}
+
+/* ---------------------------------------------------------------- meta line */
+
+.ndf-meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 10px;
+	font-size: 0.8125rem;
+	color: var(--ndf-text-muted);
+}
+
+.ndf-source {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	min-width: 0;
+	font-weight: 600;
+	color: var(--ndf-text-muted);
+}
+
+.ndf-avatar {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--ndf-accent-soft);
+	color: var(--ndf-accent);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+.ndf-source-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 22ch;
+}
+
+.ndf-tag {
+	padding: 2px 8px;
+	border-radius: 6px;
+	background: var(--ndf-surface-alt);
+	color: var(--ndf-text-faint);
+	font-size: 0.6875rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.ndf-tag-video {
+	background: var(--ndf-accent-soft);
+	color: var(--ndf-accent);
+}
+
+.ndf-time {
+	color: var(--ndf-text-faint);
+	white-space: nowrap;
+}
+
+.ndf-dismiss {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	margin-left: auto;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--ndf-text-faint);
+	font-family: inherit;
+	font-size: 1.25rem;
+	line-height: 1;
+	cursor: pointer;
+	opacity: 0.55;
+	transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.ndf-dismiss:hover {
+	background: var(--ndf-hover);
+	color: var(--ndf-text);
+	opacity: 1;
+}
+
+.ndf[data-ndf-show-dismiss="no"] .ndf-dismiss {
+	display: none;
+}
+
+/* ----------------------------------------------------------------- headline */
+
+.ndf-headline {
+	margin: 0 0 10px;
+	font-family: var(--ndf-font);
+	font-size: var(--ndf-heading-size);
+	font-weight: var(--ndf-heading-weight);
+	line-height: var(--ndf-heading-line);
+	color: var(--ndf-text);
+	/* Full headline: wraps onto as many lines as it needs. */
+	overflow: visible;
+	text-wrap: pretty;
+}
+
+.ndf-headline a {
+	color: inherit;
+	text-decoration: none;
+	background-image: linear-gradient(var(--ndf-accent), var(--ndf-accent));
+	background-repeat: no-repeat;
+	background-position: 0 100%;
+	background-size: 0% 2px;
+	transition: background-size 0.2s ease, color 0.15s ease;
+}
+
+.ndf-card:hover .ndf-headline a {
+	background-size: 100% 2px;
+}
+
+/* --------------------------------------------------------------- body text */
+
+.ndf-content {
+	color: var(--ndf-text);
+	font-size: var(--ndf-body-size);
+	line-height: var(--ndf-body-line);
+	/* Full description: never clipped, capped or ellipsised. */
+	overflow: visible;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+.ndf-content > *:first-child {
+	margin-top: 0;
+}
+
+.ndf-content > *:last-child {
+	margin-bottom: 0;
+}
+
+.ndf-content p {
+	margin: 0 0 1em;
+}
+
+.ndf-content h1,
+.ndf-content h2,
+.ndf-content h3,
+.ndf-content h4,
+.ndf-content h5,
+.ndf-content h6 {
+	margin: 1.4em 0 0.5em;
+	font-size: 1.05em;
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.ndf-content ul,
+.ndf-content ol {
+	margin: 0 0 1em;
+	padding-left: 1.4em;
+}
+
+.ndf-content li {
+	margin-bottom: 0.35em;
+}
+
+.ndf-content a {
+	color: var(--ndf-accent);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.ndf-content blockquote {
+	margin: 1em 0;
+	padding: 2px 0 2px 16px;
+	border-left: 3px solid var(--ndf-border-strong);
+	color: var(--ndf-text-muted);
+	font-style: italic;
+}
+
+.ndf-content pre {
+	margin: 1em 0;
+	padding: 14px 16px;
+	overflow-x: auto;
+	border-radius: 10px;
+	background: var(--ndf-surface-alt);
+	font-size: 0.875em;
+}
+
+.ndf-content code {
+	padding: 0.15em 0.4em;
+	border-radius: 4px;
+	background: var(--ndf-surface-alt);
+	font-size: 0.9em;
+}
+
+.ndf-content pre code {
+	padding: 0;
+	background: none;
+}
+
+.ndf-content img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 1em 0;
+	border-radius: 10px;
+}
+
+.ndf-content figure {
+	margin: 1em 0;
+}
+
+.ndf-content figcaption {
+	margin-top: 0.5em;
+	color: var(--ndf-text-faint);
+	font-size: 0.8125rem;
+}
+
+.ndf-content table {
+	width: 100%;
+	margin: 1em 0;
+	border-collapse: collapse;
+	font-size: 0.9375rem;
+}
+
+.ndf-content th,
+.ndf-content td {
+	padding: 8px 10px;
+	border: 1px solid var(--ndf-border);
+	text-align: left;
+}
+
+.ndf-content hr {
+	margin: 1.5em 0;
+	border: 0;
+	border-top: 1px solid var(--ndf-border);
+}
+
+.ndf-byline {
+	margin-top: 10px;
+	color: var(--ndf-text-faint);
+	font-size: 0.8125rem;
+}
+
+/* Opt-in collapsing. Only reachable when collapse_threshold is above zero. */
+.ndf-content.is-collapsed {
+	max-height: var(--ndf-collapse-height, 420px);
+	overflow: hidden;
+}
+
+.ndf-expand {
+	display: block;
+	margin-top: 10px;
+	padding: 7px 16px;
+	border: 1px solid var(--ndf-border-strong);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--ndf-text-muted);
+	font-family: inherit;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.ndf-expand[hidden] {
+	display: none;
+}
+
+.ndf-expand:hover {
+	background: var(--ndf-hover);
+	color: var(--ndf-text);
+}
+
+/* --------------------------------------------------------------- dismissal */
+
+.ndf-card.is-dismissed {
+	display: none;
+}
+
+/* Applied by the scripted search when the active term does not match. */
+.ndf-card.is-hidden-by-search {
+	display: none;
+}
+
+/* -------------------------------------------------------------- pagination */
+
+.ndf-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-top: 26px;
+	padding-top: 20px;
+	border-top: 1px solid var(--ndf-border);
+}
+
+.ndf-page {
+	padding: 9px 18px;
+	border: 1px solid var(--ndf-border-strong);
+	border-radius: 999px;
+	color: var(--ndf-text);
+	font-family: inherit;
+	font-size: 0.875rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ndf-page:hover {
+	background: var(--ndf-hover);
+	border-color: var(--ndf-accent);
+	color: var(--ndf-accent);
+}
+
+.ndf-page-status {
+	color: var(--ndf-text-faint);
+	font-size: 0.8125rem;
+}
+
+/* ------------------------------------------------------------------- empty */
+
+.ndf-empty {
+	padding: 40px 22px;
+	border: 1px dashed var(--ndf-border-strong);
+	border-radius: var(--ndf-radius);
+	color: var(--ndf-text-muted);
+	text-align: center;
+}
+
+.ndf-empty p {
+	margin: 0 0 14px;
+}
+
+/* -------------------------------------------------------------- responsive */
+
+@media (max-width: 719px) {
+	.ndf {
+		--ndf-pad: 16px;
+		--ndf-gap: 14px;
+		--ndf-heading-size: 1.1875rem;
+	}
+
+	.ndf-source-name {
+		max-width: 14ch;
+	}
+
+	.ndf-toolbar-actions {
+		width: 100%;
+		margin-left: 0;
+	}
+
+	.ndf-search {
+		flex-basis: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ndf *,
+	.ndf *::before,
+	.ndf *::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}
+
+@media print {
+	.ndf-toolbar,
+	.ndf-pagination,
+	.ndf-dismiss,
+	.ndf-expand {
+		display: none !important;
+	}
+
+	.ndf-card {
+		break-inside: avoid;
+		box-shadow: none;
+	}
+}
