@@ -5,11 +5,11 @@
 
 @font-face {
   font-family: "a3-sidebar-menu";
-  src:url("/nadfink/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.eot");
-  src:url("/nadfink/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.eot#iefix") format("embedded-opentype"),
-    url("/nadfink/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.woff") format("woff"),
-    url("/nadfink/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.ttf") format("truetype"),
-    url("/nadfink/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.svg#a3-sidebar-menu") format("svg");
+  src:url("/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.eot");
+  src:url("/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.eot#iefix") format("embedded-opentype"),
+    url("/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.woff") format("woff"),
+    url("/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.ttf") format("truetype"),
+    url("/wp-content/plugins/page-views-count/assets/fonts/a3-sidebar-menu.svg#a3-sidebar-menu") format("svg");
   font-weight: normal;
   font-style: normal;
 
