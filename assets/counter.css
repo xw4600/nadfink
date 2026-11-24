@@ -1,0 +1,15 @@
+.pvc_stats .pvc-count {
+  white-space: nowrap;
+}
+
+.nadfink-site-total {
+  margin: 1.25em 0 0;
+  font-size: 0.9em;
+  opacity: 0.75;
+}
+
+.nadfink-site-total strong {
+  font-weight: 600;
+}
+
+/* coded by Big Pickle */

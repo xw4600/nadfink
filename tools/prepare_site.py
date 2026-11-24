@@ -18,8 +18,11 @@ import re
 import shutil
 from pathlib import Path
 
+from install_counter import install
+
 TEXT_EXTS = {".html", ".htm", ".css"}
 SKIP_DIRS = {".git"}
+REPO_ASSETS = Path(__file__).resolve().parent.parent / "assets"
 
 ATTR_RE = re.compile(
     r"(\b(?:href|src|action|poster|content|data-src|data-lazy-src)\s*=\s*[\"'])"
@@ -101,6 +104,14 @@ def main() -> None:
             else:
                 shutil.copy2(src, dst)
 
+    # Counter assets live in this repository, not in the WordPress export.
+    if REPO_ASSETS.is_dir():
+        for src in sorted(REPO_ASSETS.rglob("*")):
+            if src.is_file():
+                dst = output / "assets" / src.relative_to(REPO_ASSETS)
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dst)
+
     (output / ".nojekyll").write_text("", encoding="utf-8")
 
     # The homepage links to /nadfink.com/linux/; WordPress 301s that to
@@ -123,6 +134,8 @@ def main() -> None:
 
     if args.cname:
         (output / "CNAME").write_text(args.cname.strip() + "\n", encoding="utf-8")
+
+    install(output, base)
 
     print(f"built {output} with base={base!r}" + (f" and CNAME={args.cname}" if args.cname else ""))
 

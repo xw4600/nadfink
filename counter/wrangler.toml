@@ -1,0 +1,10 @@
+name = "nadfink-page-counter"
+main = "worker.js"
+compatibility_date = "2026-11-23"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nadfink-counter"
+database_id = "9cef0eb8-6fc1-4efc-8ae0-b883e0a27830"
+
+# coded by Big Pickle

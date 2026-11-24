@@ -20,10 +20,15 @@ of Simply Static apart from a small, repeatable post-processing step:
 `/news/` was deliberately excluded from the export. The old page depended on
 server-side RSS fetching and cannot work on GitHub Pages.
 
-Dynamic widgets — page-view counters, comments, the search box, the contact
-form, `/feed/`, `/comments/feed/`, `wp-json/`, `xmlrpc.php`, and
-`admin-ajax.php` — are **intentionally left broken** in this export. They will
-be reworked separately.
+The old WordPress page-view counter has been replaced by a small Cloudflare
+Worker + D1 counter. `tools/prepare_site.py` swaps the plugin's AJAX spinner for
+static markup seeded with the totals recovered from the WordPress VPS, and
+copies the browser-side assets from `assets/`. See `counter/README.md` for the
+one-time Worker/D1 deployment and configuration steps.
+
+The other dynamic widgets — comments, the search box, the contact form,
+`/feed/`, `/comments/feed/`, `wp-json/`, `xmlrpc.php`, and `admin-ajax.php` —
+remain **intentionally broken** in this export.
 
 The raw Simply Static export ZIP is kept on the `export-archive` branch so the
 site can be regenerated without another WordPress export.
